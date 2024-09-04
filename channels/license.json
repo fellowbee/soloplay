@@ -1,1 +1,1 @@
-"keys":[ { "kty":"oct", "k":"nrQFDeRLSAKTLifXUIPiZg", "kid":"FmY0xnWCPCNaSpRG-tUuTQ" } ], "type":"temporary"
+{"keys":[ { "k":"nrQFDeRLSAKTLifXUIPiZg", "kid":"FmY0xnWCPCNaSpRG-tUuTQ", "kty":"oct" } ], "type":"temporary"}
