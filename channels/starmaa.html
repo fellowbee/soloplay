@@ -3,44 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player with Clear Key DRM</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #http-warning { color: red; margin: 20px; }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.2.1/dash.all.min.js"></script>
+    <title>Fetch Data and Display Result</title>
 </head>
-<body onload="init(); check();">
-    <div id="http-warning" style="display: none;"></div>
-    <video controls width="640" height="360"></video>
+<body>
+
+    <h1>Fetch Data from URL</h1>
+    
+    <!-- Input field to take the initial URL -->
+    <input type="text" id="urlInput" placeholder="Enter the initial URL" size="50">
+    <button onclick="fetchData()">Fetch</button>
+
+    <!-- Output for the final response -->
+    <h2>Response</h2>
+    <pre id="output"></pre>
+
     <script>
-        function init() {
-            const protData = {
-                "org.w3.clearkey": {
-                    "clearkeys": {
-                        "nrQFDeRLSAKTLifXUIPiZg": "FmY0xnWCPCNaSpRG-tUuTQ"
-                    }
+        async function fetchData() {
+            // Get the input URL
+            const url = document.getElementById('urlInput').value;
+
+            if (!url) {
+                alert("Please enter a valid URL");
+                return;
+            }
+
+            try {
+                // Step 1: Fetch data from the initial URL
+                const response = await fetch(url);
+                const data = await response.json();
+
+                // Extract lic_keyId and lic_key
+                const keyid = data.lic_keyId;
+                const key = data.lic_key;
+
+                if (!keyid || !key) {
+                    throw new Error("lic_keyId or lic_key not found in the response.");
                 }
-            };
-            var video,
-                player,
-                url = "https://media.axprod.net/TestVectors/v7-MultiDRM-SingleKey/Manifest_1080p_ClearKey.mpd";
 
-            video = document.querySelector("video");
-            player = dashjs.MediaPlayer().create();
-            player.initialize(video, url, true);
-            player.setProtectionData(protData);
-        }
+                // Step 2: Prepare the second URL with keyid and key
+                const finalUrl = `https://vercel-php-clearkey-hex-base64-json.vercel.app/api/results.php?keyid=${encodeURIComponent(keyid)}&key=${encodeURIComponent(key)}`;
 
-        function check() {
-            if (location.protocol === 'http:' && location.hostname !== 'localhost') {
-                var out = 'This page has been loaded under http. This might result in the EME APIs not being available to the player and any DRM-protected content will fail to play. ' +
-                    'If you wish to test manifest URLs that require EME support, then <a href=\'https:' + window.location.href.substring(window.location.protocol.length) + '\'>reload this page under https</a>.';
-                var div = document.getElementById('http-warning');
-                div.innerHTML = out;
-                div.style.display = '';
+                // Step 3: Fetch data from the final URL
+                const finalResponse = await fetch(finalUrl);
+                const finalData = await finalResponse.json();
+
+                // Display the final response
+                document.getElementById('output').textContent = JSON.stringify(finalData, null, 2);
+
+            } catch (error) {
+                // Display error message if something goes wrong
+                document.getElementById('output').textContent = `Error: ${error.message}`;
             }
         }
     </script>
+
 </body>
 </html>
