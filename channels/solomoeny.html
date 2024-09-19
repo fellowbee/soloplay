@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data Display</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        h3 {
+            margin: 10px 0;
+        }
+        h1 {
+            margin: 10px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h3 id="username">Loading username...</h3>
+        <h1 id="balance">Loading balance...</h1>
+    </div>
+
+    <script>
+        async function fetchData() {
+            // API 1: Authenticate and get the hash
+            const authData = new URLSearchParams();
+            authData.append('username', 'solostar');
+            authData.append('password', 'qwerty99');
+
+            try {
+                const authResponse = await fetch('http://solomoney.rf.gd/proxy.php/authenticate', {
+                    method: 'POST',
+                    body: authData
+                });
+
+                const authResult = await authResponse.json();
+
+                if (authResult && authResult.hash) {
+                    const hash = authResult.hash;
+
+                    // API 2: Get balance using the hash
+                    const balanceResponse = await fetch(`proxy.php/balances?hash=${hash}`);
+                    const balanceResult = await balanceResponse.json();
+                    const balance = balanceResult.balance || 'No balance';
+
+                    // API 3: Get username using the hash
+                    const userResponse = await fetch(`proxy.php/updateToken?hash=${hash}`);
+                    const userResult = await userResponse.json();
+                    const username = userResult.username || 'No username';
+
+                    // Update the UI with the username and balance
+                    document.getElementById('username').textContent = username;
+                    document.getElementById('balance').textContent = balance;
+                } else {
+                    document.getElementById('username').textContent = 'Authentication failed';
+                    document.getElementById('balance').textContent = 'N/A';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('username').textContent = 'Error loading data';
+                document.getElementById('balance').textContent = 'Error loading data';
+            }
+        }
+
+        // Fetch the data on page load
+        fetchData();
+    </script>
+
+</body>
+</html>
