@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Request</title>
+</head>
+<body>
+    <pre id="response"></pre>
+
+    <script>
+        const url = 'https://play.airtel.tv/v6/user/playback?appId=WEB&contentId=AHA_MOVIE_5344E562-EE2A-4AD3-A93B-DD0BC4F42A95';
+
+        const headers = {
+            'accept': 'application/json, text/plain, */*',
+            'accept-encoding': 'gzip, deflate, br, zstd',
+            'accept-language': 'en-US,en;q=0.9',
+            'origin': 'https://www.airtelxstream.in',
+            'play-type': 'DASH',
+            'priority': 'u=1, i',
+            'referer': 'https://www.airtelxstream.in/',
+            'request-init-time': '1728155923378',
+            'sec-ch-ua': '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'cross-site',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
+            'x-atv-ab': '86079:2|108429:0|42374:0|78244:0|95458:0|75817:0|60412:1|117812:1|120676:1|113632:1|116206:0|68215:1|66480:0|100390:2|76965:1|110385:0|129832:2',
+            'x-atv-auth': 'n78BHAXPiXDo8/kOkAsZ8hg6ld0=',
+            'x-atv-customer': '404-11|PREPAID|1|11|5',
+            'x-atv-did': '9709ed67-eca7-488a-81f5-a614dfe09e41|BROWSER|WEBOS|10.0|68|68.0.0|pc|pc',
+            'x-atv-stkn': 'E6sB/GzpUQeLBMXhinXjT0Rrmz+nluGCxk5sruj9REfX4b34TxuMICZSSyvccnXz',
+            'x-atv-traceid': '2f92da44-6393-4b0c-8565-c6a754c98655',
+            'x-atv-utkn': 'svYiu9E_S2bl0aaLW0:iXHHGAK3GjajUBZilqS6fyv1u04='
+        };
+
+        fetch(url, {
+            method: 'GET',
+            headers: headers
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            document.getElementById('response').textContent = 'Error: ' + error.message;
+        });
+    </script>
+
+</body>
+</html>
