@@ -4,7 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stream Fetcher</title>
-    <script src="https://cdn.jwplayer.com/libraries/YOUR_JWPLAYER_KEY.js"></script> <!-- Replace with your JW Player key -->
+    <script src="//ssl.p.jwpcdn.com/player/v/8.21.0/jwplayer.js"></script>
+    <script>
+        jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo'; // Replace with your JW Player key
+
+        // Function to change orientation
+        function changeOrientation() {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(error) {
+                    console.error("Orientation lock failed: ", error);
+                });
+            }
+        }
+
+        // Handle fullscreen change event
+        document.addEventListener('fullscreenchange', function() {
+            if (document.fullscreenElement) {
+                changeOrientation(); // Change orientation when entering fullscreen
+            }
+        });
+
+        // Handle other browsers
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (document.webkitFullscreenElement) {
+                changeOrientation(); // Change orientation when entering fullscreen
+            }
+        });
+        document.addEventListener('mozfullscreenchange', function() {
+            if (document.mozFullScreenElement) {
+                changeOrientation(); // Change orientation when entering fullscreen
+            }
+        });
+        document.addEventListener('MSFullscreenChange', function() {
+            if (document.msFullscreenElement) {
+                changeOrientation(); // Change orientation when entering fullscreen
+            }
+        });
+    </script>
+
 </head>
 <body>
 
@@ -25,9 +62,11 @@
 
         const url = `https://axstream.vercel.app/getStream?id=${contentId}&uid=svYiu9E_S2bl0aaLW0&token=dOweSI7QmWPTKtHG0EYoSKBd1lE%3D&authToken=E6sB%2FGzpUQeLBMXhinXjTyiLl25zVFSQZEMw4rsPOSLX4b34TxuMICZSSyvccnXz&did=86f26b76-66e6-49c0-808a-aad7bedbf4cc`;
 
+        console.log(`Fetching URL: ${url}`); // Log the URL
+
         try {
             const response = await fetch(url, { method: 'GET' });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -37,11 +76,9 @@
             const licenseUrl = data.drm ? data.drm.url : null;
             const certificateUrl = data.certificate ? data.certificate.url : null;
 
-            // Display the URLs
             document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
             document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
 
-            // Set up JW Player after fetching URLs
             if (playbackUrl) {
                 jwplayer("player").setup({
                     playlist: [{
@@ -76,10 +113,10 @@
             }
         } catch (error) {
             document.getElementById('response').textContent = `Error: ${error.message}`;
+            console.error('Fetch error: ', error); // Log the error
         }
     }
 
-    // Automatically fetch data on page load
     fetchData();
 </script>
 
