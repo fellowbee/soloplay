@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,46 +47,34 @@
             margin: 20px;
         }
         #response, #license {
-            display: none; /* Hide the <p> elements */
+            /* display: none; */
         }
     </style>
 </head>
 <body>
-    <p id="response"></p>
+    <!-- <p id="response"></p>
     <p id="license"></p>
-    <div id="player"></div>
+    <p id="cert"></p> -->
+    <!-- <div id="player"></div> -->
 
     <script>
-        async function fetchData() {
-            const url = 'https://play.airtel.tv/v6/user/playback?appId=WEB&contentId=AHA_MOVIE_5344E562-EE2A-4AD3-A93B-DD0BC4F42A95';
+        // Function to get the contentId from the URL parameters
+        function getContentIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('contentId'); // Fetch contentId from URL query string
+        }
 
-            const headers = {
-                'accept': 'application/json, text/plain, */*',
-                'accept-encoding': 'gzip, deflate, br, zstd',
-                'accept-language': 'en-US,en;q=0.9',
-                'origin': 'https://www.airtelxstream.in',
-                'play-type': 'DASH',
-                'priority': 'u=1, i',
-                'referer': 'https://www.airtelxstream.in/',
-                'request-init-time': '1728155923378',
-                'sec-ch-ua': '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-                'sec-fetch-dest': 'empty',
-                'sec-fetch-mode': 'cors',
-                'sec-fetch-site': 'cross-site',
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
-                'x-atv-ab': '86079:2|108429:0|42374:0|78244:0|95458:0|75817:0|60412:1|117812:1|120676:1|113632:1|116206:0|68215:1|66480:0|100390:2|76965:1|110385:0|129832:2',
-                'x-atv-auth': 'n78BHAXPiXDo8/kOkAsZ8hg6ld0=',
-                'x-atv-customer': '404-11|PREPAID|1|11|5',
-                'x-atv-did': '9709ed67-eca7-488a-81f5-a614dfe09e41|BROWSER|WEBOS|10.0|68|68.0.0|pc|pc',
-                'x-atv-stkn': 'E6sB/GzpUQeLBMXhinXjT0Rrmz+nluGCxk5sruj9REfX4b34TxuMICZSSyvccnXz',
-                'x-atv-traceid': '2f92da44-6393-4b0c-8565-c6a754c98655',
-                'x-atv-utkn': 'svYiu9E_S2bl0aaLW0:iXHHGAK3GjajUBZilqS6fyv1u04='
-            };
+        async function fetchData() {
+            const contentId = getContentIdFromUrl(); // Get the contentId dynamically from the URL
+            if (!contentId) {
+                document.getElementById('player').innerHTML = 'No content ID provided.';
+                return;
+            }
+
+            const apiUrl = `https://axstream.vercel.app/getStream?id=${contentId}&uid=svYiu9E_S2bl0aaLW0&token=dOweSI7QmWPTKtHG0EYoSKBd1lE=&authToken=E6sB/GzpUQeLBMXhinXjTyiLl25zVFSQZEMw4rsPOSLX4b34TxuMICZSSyvccnXz&did=86f26b76-66e6-49c0-808a-aad7bedbf4cc`;
 
             try {
-                const response = await fetch(url, { method: 'GET', headers: headers });
+                const response = await fetch(apiUrl, { method: 'GET' });
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -96,29 +83,26 @@
                 const data = await response.json();
                 const playbackUrl = data.playback ? data.playback.playUrl : null;
                 const licenseUrl = data.drm ? data.drm.url : null;
-
-                // Display the URLs
-                // document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
-                // document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
-                playbackUrl = 'https://streaming-orig-upg-vod-aha-axt-prod.mcdn.firstlight.ai/content/pubcontent/vol/E6472706-E9F8-4B46-BB8B-73FC4DF35F9D/1727071556043-output_hls.ism/index.m3u8?filter=%28%28type%3D%3D%22video%22%26%26FourCC%3D%3D%22AVC1%22%26%26systemBitrate%3C%3D1500000%29%7C%7C%28type%3D%3D%22audio%22%26%26FourCC%3D%3D%22AACL%22%29%7C%7C%28type%3D%3D%22textstream%22%29%29';
+                const certificateUrl = data.certificate ? data.certificate.url : null;
+              
 
                 // Set up JW Player after fetching URLs
                 if (playbackUrl) {
                     jwplayer("player").setup({
                         playlist: [{
                             sources: [{
-                                file: playbacckUrl,
-                                type: 'application/dash+xml',
+                                file: playbackUrl,
+                                type: 'application/octet-binary',
                                 drm: {
                                     fairplay: {
-                                        certificateUrl: 'https://static-assets-cdn.api.aha.firstlight.ai/security/fp/fairplay_aha.cer',
-                                        processSpcUrl: 'https://fairplay-proxy.api.aha.firstlight.ai/getlicense?service=aha&version=1.0&kid=E6472706-E9F8-4B46-BB8B-73FC4DF35F9D&ptoken=eyJjb250ZW50SWQiOiJFNjQ3MjcwNi1FOUY4LTRCNDYtQkI4Qi03M0ZDNERGMzVGOUQiLCJsaWNlbnNlRXhwaXJ5VGltZSI6MTcyODI2NzQ4MjA2OCwiZW50aXRsZWRDb250ZW50SWRzIjoiUlRZME56STNNRFl0UlRsR09DMDBRalEyTFVKQ09FSXROek5HUXpSRVJqTTFSamxFIiwibWF4VXNlcyI6MSwic2lnbmF0dXJlIjoiZjRlZmNiNDE3Yzk2YTc2NmE5MjNlNzA2MTZhYjBiMTVhZDg3Mzc0ZGU1OTVhZjVlY2NlMWEyZThmMzEwM2ZjMSIsInVuaXF1ZUlkIjoiODZmMjZiNzYtNjZlNi00OWMwLTgwOGEtYWFkN2JlZGJmNGNjIiwiaXNzdWVyIjoiU0lHTktFWV9QVE9LRU5fQ09OU1VNRV9JU1NVRVIiLCJhcGlLZXkiOiJhcGlLZXkiLCJrZXlWZXJzaW9uIjoidmVyczAxIiwiZXhwaXJ5VGltZSI6MTcyODIyNDM0MjA2OCwiY3JlYXRlZFRpbWUiOjE3MjgyMjQyODIwNjgsInRva2VuTW9kZWxWZXJzaW9uIjoiVjMifQ==',
+                                        certificateUrl: certificateUrl,
+                                        processSpcUrl: licenseUrl,
                                         licenseResponseType: 'json',
                                         licenseRequestHeaders: [
                                           {
                                             name: 'Content-type', value: 'application/json'
                                           }
-                                        ]
+                                        ],
                                     }
                                 },
                                 default: true,
