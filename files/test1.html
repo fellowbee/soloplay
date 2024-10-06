@@ -98,15 +98,16 @@
                 const licenseUrl = data.drm ? data.drm.url : null;
 
                 // Display the URLs
-                document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
-                document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
+                // document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
+                // document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
+                playbackUrl = 'https://streaming-orig-upg-vod-aha-axt-prod.mcdn.firstlight.ai/content/pubcontent/vol/E6472706-E9F8-4B46-BB8B-73FC4DF35F9D/1727071556043-output_hls.ism/index.m3u8?filter=%28%28type%3D%3D%22video%22%26%26FourCC%3D%3D%22AVC1%22%26%26systemBitrate%3C%3D1500000%29%7C%7C%28type%3D%3D%22audio%22%26%26FourCC%3D%3D%22AACL%22%29%7C%7C%28type%3D%3D%22textstream%22%29%29';
 
                 // Set up JW Player after fetching URLs
                 if (playbackUrl) {
                     jwplayer("player").setup({
                         playlist: [{
                             sources: [{
-                                file: 'https://streaming-orig-upg-vod-aha-axt-prod.mcdn.firstlight.ai/content/pubcontent/vol/E6472706-E9F8-4B46-BB8B-73FC4DF35F9D/1727071556043-output_hls.ism/index.m3u8?filter=%28%28type%3D%3D%22video%22%26%26FourCC%3D%3D%22AVC1%22%26%26systemBitrate%3C%3D1500000%29%7C%7C%28type%3D%3D%22audio%22%26%26FourCC%3D%3D%22AACL%22%29%7C%7C%28type%3D%3D%22textstream%22%29%29',
+                                file: playbacckUrl,
                                 type: 'application/dash+xml',
                                 drm: {
                                     fairplay: {
