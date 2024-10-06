@@ -22,17 +22,29 @@
                 changeOrientation();
             }
         });
+    </script>
+    <title>API Response Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <p id="response"></p>
+    <p id="license"></p>
+    <div id="player"></div>
 
+    <script>
         async function fetchData() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id') || 'AHA_MOVIE_E6472706-E9F8-4B46-BB8B-73FC4DF35F9D'; // Default ID
-            const apiUrl = `http://watch.soloplay.great-site.net/movies/new.php?id=${id}`;
+            const url = 'https://soloplay.tiiny.io/?id=AHA_MOVIE_E6472706-E9F8-4B46-BB8B-73FC4DF35F9D';
 
             try {
-                const response = await fetch(apiUrl); // Fetch data without custom headers
+                const response = await fetch(url); // Fetch data without custom headers
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(HTTP error! status: ${response.status});
                 }
 
                 const data = await response.json();
@@ -54,7 +66,7 @@
                                 drm: {
                                     fairplay: {
                                         url: certificateUrl,
-                                        processSpcUrl: licenseUrl
+                                        processSpcUrl:licenseUrl
                                     }
                                 },
                                 default: true,
@@ -72,28 +84,12 @@
                     document.getElementById('player').innerHTML = 'No video URL provided.';
                 }
             } catch (error) {
-                document.getElementById('response').textContent = `Error: ${error.message}`;
+                document.getElementById('response').textContent = Error: ${error.message};
             }
         }
 
         // Automatically fetch data on page load
         fetchData();
     </script>
-    <title>API Response Example</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #player {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-</head>
-<body>
-    <p id="response"></p>
-    <p id="license"></p>
-    <div id="player"></div>
 </body>
 </html>
