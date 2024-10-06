@@ -3,48 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch JSON Example</title>
-</head>
-<body>
-    <h1>Fetch JSON Example</h1>
-    <pre id="result">Loading...</pre>
-
+    <script src="//ssl.p.jwpcdn.com/player/v/8.21.0/jwplayer.js"></script>
     <script>
-        // Function to fetch data from the API
-        async function fetchData() {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const url = 'https://axstream.vercel.app/getStream'; // Base URL
-            const params = new URLSearchParams({
-                id: 'AHA_MOVIE_E6472706-E9F8-4B46-BB8B-73FC4DF35F9D',
-                uid: 'svYiu9E_S2bl0aaLW0',
-                token: 'dOweSI7QmWPTKtHG0EYoSKBd1lE=',
-                authToken: 'E6sB/GzpUQeLBMXhinXjTyiLl25zVFSQZEMw4rsPOSLX4b34TxuMICZSSyvccnXz',
-                did: '86f26b76-66e6-49c0-808a-aad7bedbf4cc'
-            });
+        jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo'; // Replace with your JW Player key
 
-            try {
-                const response = await fetch(`${proxyUrl}${url}?${params}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({}) // You can add any body data here if needed
+        // Function to change orientation
+        function changeOrientation() {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(error) {
+                    console.error("Orientation lock failed: ", error);
                 });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-                document.getElementById('result').textContent = 'Error: ' + error.message;
             }
         }
 
-        // Automatically fetch data when the page loads
-        window.onload = fetchData;
+        // Handle fullscreen change event
+        document.addEventListener('fullscreenchange', function() {
+            if (document.fullscreenElement) {
+                changeOrientation();
+            }
+        });
+    </script>
+    <title>API Response Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <p id="response"></p>
+    <p id="license"></p>
+    <div id="player"></div>
+
+    <script>
+        async function fetchData() {
+            const url = 'http://watch.soloplay.great-site.net/movies/new.php?id=AHA_MOVIE_E6472706-E9F8-4B46-BB8B-73FC4DF35F9D';
+
+            try {
+                const response = await fetch(url); // Fetch data without custom headers
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const playbackUrl = data.playback ? data.playback.playUrl : null;
+                const licenseUrl = data.drm ? data.drm.url : null;
+                const certificateUrl = data.certificate ? data.certificate.url : null;
+
+                // Display the URLs
+                document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
+                document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
+
+                // Set up JW Player after fetching URLs
+                if (playbackUrl) {
+                    jwplayer("player").setup({
+                        playlist: [{
+                            sources: [{
+                                file: playbackUrl,
+                                type: 'application/dash+xml',
+                                drm: {
+                                    fairplay: {
+                                        url: certificateUrl,
+                                        processSpcUrl:licenseUrl
+                                    }
+                                },
+                                default: true,
+                            }]
+                        }],
+                        width: "100%",
+                        height: "100%",
+                        aspectratio: "16:9",
+                        controls: true,
+                        autostart: true,
+                    }).on('error', function(event) {
+                        console.error("Error occurred: ", event);
+                    });
+                } else {
+                    document.getElementById('player').innerHTML = 'No video URL provided.';
+                }
+            } catch (error) {
+                document.getElementById('response').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Automatically fetch data on page load
+        fetchData();
     </script>
 </body>
 </html>
