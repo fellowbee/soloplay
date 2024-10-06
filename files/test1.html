@@ -3,52 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POST Request Example</title>
-    <style>
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-    </style>
+    <title>Fetch JSON Example</title>
 </head>
 <body>
+    <h1>Fetch JSON Example</h1>
+    <pre id="result">Loading...</pre>
 
-<h1>POST Request Example</h1>
-<pre id="response"></pre>
+    <script>
+        // Function to fetch data from the API
+        async function fetchData() {
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const url = 'https://axstream.vercel.app/getStream'; // Base URL
+            const params = new URLSearchParams({
+                id: 'AHA_MOVIE_E6472706-E9F8-4B46-BB8B-73FC4DF35F9D',
+                uid: 'svYiu9E_S2bl0aaLW0',
+                token: 'dOweSI7QmWPTKtHG0EYoSKBd1lE=',
+                authToken: 'E6sB/GzpUQeLBMXhinXjTyiLl25zVFSQZEMw4rsPOSLX4b34TxuMICZSSyvccnXz',
+                did: '86f26b76-66e6-49c0-808a-aad7bedbf4cc'
+            });
 
-<script>
-    const url = 'https://axstream.vercel.app/getStream';
-    const data = {
-        id: 'AHA_MOVIE_E6472706-E9F8-4B46-BB8B-73FC4DF35F9D',
-        uid: 'svYiu9E_S2bl0aaLW0',
-        token: 'dOweSI7QmWPTKtHG0EYoSKBd1lE=',
-        authToken: 'E6sB/GzpUQeLBMXhinXjTyiLl25zVFSQZEMw4rsPOSLX4b34TxuMICZSSyvccnXz',
-        did: '86f26b76-66e6-49c0-808a-aad7bedbf4cc'
-    };
+            try {
+                const response = await fetch(`${proxyUrl}${url}?${params}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({}) // You can add any body data here if needed
+                });
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            }
         }
-        return response.json();
-    })
-    .then(data => {
-        document.getElementById('response').textContent = JSON.stringify(data, null, 2);
-    })
-    .catch(error => {
-        document.getElementById('response').textContent = 'Error: ' + error.message;
-    });
-</script>
 
+        // Automatically fetch data when the page loads
+        window.onload = fetchData;
+    </script>
 </body>
 </html>
