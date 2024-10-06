@@ -46,16 +46,9 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        /* pre {
-            background: #f4f4f4;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        } */
     </style>
 </head>
 <body>
-    <!-- <h1>Video URLs</h1> -->
     <p id="response"></p>
     <p id="license"></p>
     <div id="player"></div>
@@ -101,23 +94,35 @@
                 const licenseUrl = data.drm ? data.drm.url : null;
 
                 // Display the URLs
-                let output = '';
+                document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
+                document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
+
+                // Set up JW Player after fetching URLs
                 if (playbackUrl) {
-                    output += `${playbackUrl}\n`;
+                    jwplayer("player").setup({
+                        playlist: [{
+                            sources: [{
+                                file: playbackUrl,
+                                type: 'application/dash+xml',
+                                drm: {
+                                    widevine: {
+                                        url: licenseUrl
+                                    }
+                                },
+                                default: true,
+                            }]
+                        }],
+                        width: "100%",
+                        height: "100%",
+                        aspectratio: "16:9",
+                        controls: true,
+                        autostart: true,
+                    }).on('error', function(event) {
+                        console.error("Error occurred: ", event);
+                    });
                 } else {
-                    output += 'Playback URL not found.\n';
-                };
-
-                let drmurl = '';
-                if(licenseUrl){
-                    drmurl += `${licenseUrl}\n`;
-                } else{
-                    drmurl += 'not found';
+                    document.getElementById('player').innerHTML = 'No video URL provided.';
                 }
-
-
-                document.getElementById('response').textContent = output;
-                document.getElementById('license').textContent = drmurl;
             } catch (error) {
                 document.getElementById('response').textContent = `Error: ${error.message}`;
             }
@@ -125,40 +130,6 @@
 
         // Automatically fetch data on page load
         fetchData();
-        
-        
-    </script>
-    
-
-    <script>
-        var playUrl = document.getElementById('response').innerText;
-        var licenseUrl = document.getElementById('license').innerText;
-
-        if (playUrl) {
-            jwplayer("player").setup({
-                playlist: [{
-                    sources: [{
-                        file: playUrl,
-                        type: 'application/dash+xml', // Adjusted content type
-                        drm: {
-                            widevine: {
-                                url: licenseUrl
-                            }
-                        },
-                        default: true,
-                    }]
-                }],
-                width: "100%",
-                height: "100%",
-                aspectratio: "16:9",
-                controls: true,
-                autostart: true,
-            }).on('error', function(event) {
-                console.error("Error occurred: ", event);
-            });
-        } else {
-            document.getElementById('player').innerHTML = 'No video URL provided.';
-        }
     </script>
 </body>
 </html>
