@@ -19,7 +19,24 @@
         // Handle fullscreen change event
         document.addEventListener('fullscreenchange', function() {
             if (document.fullscreenElement) {
-                changeOrientation();
+                changeOrientation(); // Change orientation when entering fullscreen
+            }
+        });
+
+        // Handle other browsers
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (document.webkitFullscreenElement) {
+                changeOrientation(); // Change orientation when entering fullscreen
+            }
+        });
+        document.addEventListener('mozfullscreenchange', function() {
+            if (document.mozFullScreenElement) {
+                changeOrientation(); // Change orientation when entering fullscreen
+            }
+        });
+        document.addEventListener('MSFullscreenChange', function() {
+            if (document.msFullscreenElement) {
+                changeOrientation(); // Change orientation when entering fullscreen
             }
         });
     </script>
@@ -28,6 +45,9 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+        }
+        #response, #license {
+            display: none; /* Hide the <p> elements */
         }
     </style>
 </head>
@@ -38,13 +58,13 @@
 
     <script>
         async function fetchData() {
-            const url = 'https://soloplay.tiiny.io/?id=AHA_MOVIE_E6472706-E9F8-4B46-BB8B-73FC4DF35F9D';
+            const url = `https://soloplay.tiiny.io/?id=${id}`;
 
             try {
-                const response = await fetch(url); // Fetch data without custom headers
+                const response = await fetch(url, { method: 'GET' });
                 
                 if (!response.ok) {
-                    throw new Error(HTTP error! status: ${response.status});
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
@@ -65,13 +85,14 @@
                                 type: 'application/dash+xml',
                                 drm: {
                                     fairplay: {
-                                        url: certificateUrl,
-                                        processSpcUrl:licenseUrl
+                                        certificateUrl: licenseUrl,
+                                        processSpcUrl: certificateUrl
                                     }
                                 },
                                 default: true,
                             }]
                         }],
+                        stretching: "fill",
                         width: "100%",
                         height: "100%",
                         aspectratio: "16:9",
@@ -84,7 +105,7 @@
                     document.getElementById('player').innerHTML = 'No video URL provided.';
                 }
             } catch (error) {
-                document.getElementById('response').textContent = Error: ${error.message};
+                document.getElementById('response').textContent = `Error: ${error.message}`;
             }
         }
 
