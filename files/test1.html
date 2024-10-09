@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Response Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #player {
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 16:9;
+        }
+    </style>
     <script src="//ssl.p.jwpcdn.com/player/v/8.21.0/jwplayer.js"></script>
     <script>
         jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo'; // Replace with your JW Player key
@@ -17,100 +29,46 @@
         }
 
         // Handle fullscreen change event
-        document.addEventListener('fullscreenchange', function() {
-            if (document.fullscreenElement) {
+        function handleFullscreenChange() {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
                 changeOrientation(); // Change orientation when entering fullscreen
             }
-        });
+        }
 
-        // Handle other browsers
-        document.addEventListener('webkitfullscreenchange', function() {
-            if (document.webkitFullscreenElement) {
-                changeOrientation(); // Change orientation when entering fullscreen
-            }
-        });
-        document.addEventListener('mozfullscreenchange', function() {
-            if (document.mozFullScreenElement) {
-                changeOrientation(); // Change orientation when entering fullscreen
-            }
-        });
-        document.addEventListener('MSFullscreenChange', function() {
-            if (document.msFullscreenElement) {
-                changeOrientation(); // Change orientation when entering fullscreen
-            }
-        });
+        // Add event listeners for fullscreen changes
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
     </script>
-    <title>API Response Example</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #response, #license {
-            display: none; /* Hide the <p> elements */
-        }
-    </style>
 </head>
 <body>
-    <p id="response"></p>
-    <p id="license"></p>
     <div id="player"></div>
 
     <script>
-        async function fetchData() {
-            const url = `https://soloplay.tiiny.io/?id=${id}`;
+        // Define playback URL
+        var playbackUrl = 'https://livestream14.sunnxt.com/6a5c3dbb8b6044f8be835e13a815f40b/GeminiTVHD_IN_index.mpd';
 
-            try {
-                const response = await fetch(url, { method: 'GET' });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const playbackUrl = data.playback ? data.playback.playUrl : null;
-                const licenseUrl = data.drm ? data.drm.url : null;
-                const certificateUrl = data.certificate ? data.certificate.url : null;
-
-                // Display the URLs
-                document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
-                document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
-
-                // Set up JW Player after fetching URLs
-                if (playbackUrl) {
-                    jwplayer("player").setup({
-                        playlist: [{
-                            sources: [{
-                                file: playbackUrl,
-                                type: 'application/dash+xml',
-                                drm: {
-                                    fairplay: {
-                                        certificateUrl: licenseUrl,
-                                        processSpcUrl: certificateUrl
-                                    }
-                                },
-                                default: true,
-                            }]
-                        }],
-                        stretching: "fill",
-                        width: "100%",
-                        height: "100%",
-                        aspectratio: "16:9",
-                        controls: true,
-                        autostart: true,
-                    }).on('error', function(event) {
-                        console.error("Error occurred: ", event);
-                    });
-                } else {
-                    document.getElementById('player').innerHTML = 'No video URL provided.';
-                }
-            } catch (error) {
-                document.getElementById('response').textContent = `Error: ${error.message}`;
-            }
-        }
-
-        // Automatically fetch data on page load
-        fetchData();
+        // Set up JW Player
+        jwplayer("player").setup({
+            playlist: [{
+                sources: [{
+                    file: playbackUrl,
+                    drm: {
+                        clearkey: {
+                            keyId: '880dc94460af4197bbbf43a176fb3a95',
+                            key: '0beb7012ffd133360889d5d56e20de4d'
+                        }
+                    },
+                    default: true,
+                }]
+            }],
+            stretching: "fill",
+            width: "100%",
+            height: "100%",
+            controls: true,
+            autostart: true,
+        });
     </script>
 </body>
 </html>
