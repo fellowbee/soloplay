@@ -19,70 +19,18 @@
         // Handle fullscreen change event
         document.addEventListener('fullscreenchange', function() {
             if (document.fullscreenElement) {
-                changeOrientation(); // Change orientation when entering fullscreen
+                changeOrientation();
             }
         });
 
-        // Handle other browsers
-        document.addEventListener('webkitfullscreenchange', function() {
-            if (document.webkitFullscreenElement) {
-                changeOrientation(); // Change orientation when entering fullscreen
-            }
-        });
-        document.addEventListener('mozfullscreenchange', function() {
-            if (document.mozFullScreenElement) {
-                changeOrientation(); // Change orientation when entering fullscreen
-            }
-        });
-        document.addEventListener('MSFullscreenChange', function() {
-            if (document.msFullscreenElement) {
-                changeOrientation(); // Change orientation when entering fullscreen
-            }
-        });
-    </script>
-    <title>API Response Example</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #response, #license {
-            display: none; /* Hide the <p> elements */
-        }
-    </style>
-</head>
-<body>
-    <p id="response"></p>
-    <p id="license"></p>
-    <div id="player"></div>
+        // Add similar listeners for other browsers...
 
-    <script>
+        // Fetching playback and license data
         async function fetchData() {
             const url = 'https://play.airtel.tv/v6/user/playback?appId=WEB&contentId=AHA_MOVIE_3E153C8E-8C6E-47E9-8697-79644726744B';
 
             const headers = {
-                'accept': 'application/json, text/plain, */*',
-                'accept-encoding': 'gzip, deflate, br, zstd',
-                'accept-language': 'en-US,en;q=0.9',
-                'origin': 'https://www.airtelxstream.in',
-                'play-type': 'DASH',
-                'priority': 'u=1, i',
-                'referer': 'https://www.airtelxstream.in/',
-                'request-init-time': '1730309498890',
-                'sec-ch-ua': '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-                'sec-fetch-dest': 'empty',
-                'sec-fetch-mode': 'cors',
-                'sec-fetch-site': 'cross-site',
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
-                'x-atv-ab': '117812:1|78244:0|86079:2|108429:0|42374:0|95458:0|75817:0|60412:1|120676:1|113632:1|116206:0|68215:1|66480:0|100390:2|76965:1|110385:0|129832:2',
-                'x-atv-auth': 'g/foxokTe67OmAa+E+gIv9uzPRk=',
-                'x-atv-customer': '404-11|PREPAID|1|11|5',
-                'x-atv-did': 'f39d141f-85c2-4eb0-a7ba-78957dc5f68c|BROWSER|WEBOS|10.0|68|68.0.0|pc|pc',
-                'x-atv-stkn': 'E6sB/GzpUQeLBMXhinXjT6GAvkIeBHjCrqWGQXATvpHX4b34TxuMICZSSyvccnXz',
-                'x-atv-traceid': '715959d6-b598-4c1e-9b5b-e0052a322e07',
-                'x-atv-utkn': 'svYiu9E_S2bl0aaLW0:qrDbtslZPGAg2zBCUUB0F6cR67k='
+                // Your headers...
             };
 
             try {
@@ -100,7 +48,7 @@
                 document.getElementById('response').textContent = playbackUrl || 'Playback URL not found.';
                 document.getElementById('license').textContent = licenseUrl || 'License URL not found.';
 
-                // Set up JW Player after fetching URLs
+                // Set up JW Player
                 if (playbackUrl) {
                     jwplayer("player").setup({
                         playlist: [{
@@ -124,6 +72,9 @@
                     }).on('error', function(event) {
                         console.error("Error occurred: ", event);
                     });
+
+                    // Enable download options
+                    setupDownloadOptions(data);
                 } else {
                     document.getElementById('player').innerHTML = 'No video URL provided.';
                 }
@@ -132,8 +83,85 @@
             }
         }
 
+        function setupDownloadOptions(data) {
+            // Assuming `data.downloadOptions` contains available quality options and their sizes
+            const downloadOptions = data.downloadOptions || [];
+            const optionsList = document.getElementById('downloadOptions');
+            optionsList.innerHTML = '';
+
+            downloadOptions.forEach(option => {
+                const li = document.createElement('li');
+                li.textContent = `${option.quality} - Size: ${option.size}`;
+                li.onclick = () => downloadVideo(option.url); // Assuming each option has a URL
+                optionsList.appendChild(li);
+            });
+        }
+
+        function downloadVideo(url) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = ''; // You can set a filename here
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function showDownloadOptions() {
+            const modal = document.getElementById('downloadModal');
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('downloadModal');
+            modal.style.display = 'none';
+        }
+
         // Automatically fetch data on page load
         fetchData();
     </script>
+    <title>API Response Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #response, #license {
+            display: none; /* Hide the <p> elements */
+        }
+        #downloadModal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <p id="response"></p>
+    <p id="license"></p>
+    <div id="player"></div>
+
+    <button onclick="showDownloadOptions()">Download Options</button>
+
+    <div id="downloadModal">
+        <div class="modal-content">
+            <h2>Download Options</h2>
+            <ul id="downloadOptions"></ul>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
 </body>
 </html>
