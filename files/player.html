@@ -9,19 +9,12 @@
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
+            height: auto;
             overflow: hidden;
         }
         #player-container {
             width: 100%;
-            height: auto; /* Increase height by 30px to hide controls */
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        /* Optionally, hide the controls to ensure they aren't visible */
-        .jw-controls {
-            display: none !important;
+            height: 100%;
         }
     </style>
 </head>
@@ -49,7 +42,7 @@
         }
 
         // Construct the API URL with the dynamic parameters
-        const api_url = `https://oneplay-nine.vercel.app/api/videoplayer?ottplay_id=${ottplay_id}&provider=${provider}&content_type=${content_type}`;
+        const api_url = https://oneplay-nine.vercel.app/api/videoplayer?ottplay_id=${ottplay_id}&provider=${provider}&content_type=${content_type};
 
         // Fetch video data from the API
         fetch(api_url)
@@ -89,7 +82,7 @@
                     autostart: true,
                     stretching: "uniform",
                     fullscreen: true, // Enable fullscreen mode
-                    controls: true // Enable controls initially (can be hidden via CSS)
+                    controls: true
                 });
 
                 // Enable fullscreen on mobile devices in landscape mode
