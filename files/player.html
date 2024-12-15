@@ -64,12 +64,18 @@
 
                 // Initialize JWPlayer
                 jwplayer("player-container").setup({
-                    file: playback_url, // The DASH manifest URL
-                    drm: {
-                        widevine: {
-                            licenseUrl: license_url // Widevine license URL
-                        }
-                    },
+                    playlist: [{
+                        sources: [{
+                            file: playback_url,
+                            type: 'application/dash+xml',
+                            drm: {
+                                widevine: {
+                                    url: license_url
+                                }
+                            },
+                            default: true,
+                        }]
+                    }],
                     width: "100%",
                     height: "100%",
                     aspectratio: "16:9",
