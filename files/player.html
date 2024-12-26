@@ -51,7 +51,7 @@
                 const license_url = data.playback[0]?.keys[0]?.license_url || '';
 
                 // Check if the necessary data is available
-                if (!playback_url || !license_url) {
+                if (!proxiedPlaybackUrl || !license_url) {
                     throw new Error('Invalid video data: Missing playback_url or license_url');
                 }
 
