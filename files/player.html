@@ -40,8 +40,14 @@
         fetch(apiUrl)
             .then(response => response.json())  // Parse JSON response
             .then(data => {
+                const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // CORS proxy URL
+                const playbackUrl = data.playback[0]?.playback_url;  // The original playback URL from the API
+                
+                // Now, prepend the proxy URL
+                const proxiedPlaybackUrl = proxyUrl + playbackUrl;
+
                 // Extract playback URL and license URL from the response
-                const playback_url = data.playback[0]?.playback_url || '';
+                // const playback_url = data.playback[0]?.playback_url || '';
                 const license_url = data.playback[0]?.keys[0]?.license_url || '';
 
                 // Check if the necessary data is available
@@ -53,7 +59,7 @@
                 jwplayer("player-container").setup({
                     playlist: [{
                         sources: [{
-                            file: playback_url,
+                            file: proxiedPlaybackUrl,
                             type: 'application/dash+xml',
                             drm: {
                                 widevine: {
