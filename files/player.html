@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Widevine Video Player</title>
+    <title>SOLOPLAY</title>
     <script src="https://content.jwplatform.com/libraries/KB5zFt7A.js"></script>
     <style>
         body, html {
@@ -24,12 +24,17 @@
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const playback_url = urlParams.get('playback_url');
-        const license_url = urlParams.get('license_url'); 
+        let license_url = urlParams.get('license_url'); 
 
         // Validate playback_url
         if (!playback_url) {
             alert('Missing parameter: playback_url');
             throw new Error('Missing parameter: playback_url');
+        }
+
+        // Decode license_url (if provided)
+        if (license_url) {
+            license_url = decodeURIComponent(license_url);
         }
 
         // JW Player configuration
