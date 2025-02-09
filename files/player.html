@@ -19,78 +19,45 @@
 </head>
 <body>
     <div id="player-container"></div>
-    
+
     <script>
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const ottplay_id = urlParams.get('ottplay_id');
-        const provider = urlParams.get('provider');
-        const content_type = urlParams.get('content_type');
+        const playback_url = urlParams.get('playback_url');
+        const license_url = urlParams.get('license_url'); 
 
-        // Check if parameters are missing
-        if (!ottplay_id || !provider || !content_type) {
-            alert('Missing parameters: ottplay_id, provider, or content_type');
-            throw new Error('Missing parameters');
+        // Validate playback_url
+        if (!playback_url) {
+            alert('Missing parameter: playback_url');
+            throw new Error('Missing parameter: playback_url');
         }
 
-        // Construct the API URL with the dynamic parameters
-        const apiUrl = `https://oneplay-nine.vercel.app/api/videoplayer?ottplay_id=${ottplay_id}&provider=${provider}&content_type=${content_type}`;
+        // JW Player configuration
+        const playerConfig = {
+            playlist: [{
+                sources: [{
+                    file: playback_url,
+                    type: 'application/dash+xml',
+                    default: true
+                }]
+            }],
+            width: "100%",
+            aspectratio: "16:9",
+            autostart: true,
+            stretching: "uniform",
+            fullscreen: true,
+            controls: true
+        };
 
-        // Fetch video data from API
-        fetch(apiUrl)
-            .then(response => response.json())  // Parse JSON response
-            .then(data => {
-                const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // CORS proxy URL
-                const playbackUrl = data.playback[0]?.playback_url;  // The original playback URL from the API
-                
-                // Now, prepend the proxy URL
-                const proxiedPlaybackUrl = proxyUrl + playbackUrl;
+        // If license_url exists, configure Widevine DRM
+        if (license_url) {
+            playerConfig.playlist[0].sources[0].drm = {
+                widevine: { url: license_url }
+            };
+        }
 
-                // Extract playback URL and license URL from the response
-                // const playback_url = data.playback[0]?.playback_url || '';
-                const license_url = data.playback[0]?.keys[0]?.license_url || '';
-
-                // Check if the necessary data is available
-                if (!proxiedPlaybackUrl || !license_url) {
-                    throw new Error('Invalid video data: Missing playback_url or license_url');
-                }
-
-                // Initialize JWPlayer with the fetched data
-                jwplayer("player-container").setup({
-                    playlist: [{
-                        sources: [{
-                            file: proxiedPlaybackUrl,
-                            type: 'application/dash+xml',
-                            drm: {
-                                widevine: {
-                                    url: license_url
-                                }
-                            },
-                            default: true,
-                        }]
-                    }],
-                    width: "100%",
-                    // height: "100%",
-                    aspectratio: "16:9",
-                    autostart: true,
-                    stretching: "uniform",
-                    fullscreen: true, // Enable fullscreen mode
-                    controls: true
-                });
-
-                // Enable fullscreen on mobile devices in landscape mode
-                var videoPlayer = document.querySelector("#player-container");
-                videoPlayer.addEventListener("click", function() {
-                    if (window.innerWidth > window.innerHeight) {
-                        document.fullscreenElement || document.documentElement.requestFullscreen();
-                    }
-                });
-
-            })
-            .catch(error => {
-                console.error('Error fetching video data:', error);
-                alert('Error loading video. Please try again later.');
-            });
+        // Initialize JW Player
+        jwplayer("player-container").setup(playerConfig);
     </script>
 </body>
 </html>
