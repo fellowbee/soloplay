@@ -9,11 +9,12 @@
         body, html {
             margin: 0;
             padding: 0;
-            height: 100vh;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling */
         }
         #player-container {
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
         }
     </style>
 </head>
@@ -47,9 +48,9 @@
                 }]
             }],
             width: "100%",
-            aspectratio: "16:9",
+            height: "100%",  // Ensures full height
             autostart: true,
-            stretching: "uniform",
+            stretching: "fill",  // Forces video to fill the screen
             fullscreen: true,
             controls: true
         };
@@ -63,6 +64,11 @@
 
         // Initialize JW Player
         jwplayer("player-container").setup(playerConfig);
+
+        // Handle resizing dynamically
+        window.addEventListener("resize", function() {
+            jwplayer("player-container").resize("100%", "100%");
+        });
     </script>
 </body>
 </html>
