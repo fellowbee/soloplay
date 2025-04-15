@@ -1,0 +1,20 @@
+#EXTINF:-1 tvg-id="1" tvg-name="ETV TELUGU HD" tvg-logo="https://etv-win-image.akamaized.net/etvwin/live/channel/28270/etv-telugu-768x432.jpg" group-title="Entertainment",ETV TELUGU HD
+https://d7rw24rjxc0ra.cloudfront.net/v1/master/3239369ce9144762f6df79ad0250b16a882d6a39/ETV_HD_H264/index.m3u8
+
+#EXTINF:-1 tvg-id="2" tvg-name="ETV Plus HD" tvg-logo="https://etv-win-image.akamaized.net/etvwin/live/channel/89802/etv-plus-768x432.jpg" group-title="Entertainment",ETV Plus HD
+https://dw56h1aaay8sg.cloudfront.net/v1/master/3239369ce9144762f6df79ad0250b16a882d6a39/ETV_PLUS_H264/index.m3u8
+
+#EXTINF:-1 tvg-id="2" tvg-name="ETV Cinema HD" tvg-logo="https://etv-win-image.akamaized.net/etvwin/live/channel/27931/etv-cinema-768x432.jpg" group-title="Entertainment",ETV Cinema HD
+https://d3l6wdq9op77vw.cloudfront.net/v1/master/3239369ce9144762f6df79ad0250b16a882d6a39/ETV_CINEMA_H264/index.m3u8
+
+#EXTINF:-1 tvg-id="4" tvg-name="ETV Andhra Pradesh HD" tvg-logo="https://etv-win-image.akamaized.net/etvwin/live/channel/47688/etv-andhra-pradesh-768x432.jpg" group-title="News",ETV Andhra Pradesh HD
+https://d1missilavut3r.cloudfront.net/v1/master/3239369ce9144762f6df79ad0250b16a882d6a39/ETV_AP_H264/index.m3u8
+
+#EXTINF:-1 tvg-id="5" tvg-name="ETV Telangana HD" tvg-logo="https://etv-win-image.akamaized.net/etvwin/live/channel/18492/etv-telangana-768x432.jpg" group-title="News",ETV Telangana HD
+https://d3ixok5ip38laf.cloudfront.net/v1/master/3239369ce9144762f6df79ad0250b16a882d6a39/ETV_TS_H264/index.m3u8
+
+#EXTINF:-1 tvg-id="6" tvg-name="ETV Abhiruchi HD" tvg-logo="https://etv-win-image.akamaized.net/etvwin/live/channel/37856/etv-abhiruchi-768x432.jpg" group-title="Entertainment",ETV Abhiruchi HD
+https://d1ukkqluw2r4g5.cloudfront.net/v1/master/3239369ce9144762f6df79ad0250b16a882d6a39/ETV_ABHIRUCHI_H264/index.m3u8
+
+#EXTINF:-1 tvg-id="7" tvg-name="ETV Life HD" tvg-logo="https://etv-win-image.akamaized.net/etvwin/live/channel/47283/etv-life-768x432.jpg" group-title="Entertainment",ETV Life HD
+https://d1s3zdjcu5tny9.cloudfront.net/v1/master/3239369ce9144762f6df79ad0250b16a882d6a39/ETV_LIFE_H264/index.m3u8
